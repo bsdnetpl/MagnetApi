@@ -8,7 +8,7 @@ System łączy intuicyjną obsługę z zaawansowanymi funkcjonalnościami,
 co czyni go wszechstronnym narzędziem wspomagającym zarządzanie firmą..
 Wymagania systemowe
 
-    .NET Core 3.1 lub nowszy
+    .NET Core 6.0 lub nowszy
     System operacyjny: Windows, macOS lub Linux
 
 Instalacja
