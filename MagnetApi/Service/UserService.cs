@@ -2,19 +2,25 @@
 using MagnetApi.DTO;
 using MagnetApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MagnetApi.Service
     {
     public class UserService : IUserService
         {
         private readonly DBConnection _context;
+        private readonly IConfiguration _configuration;
 
-        public UserService(DBConnection context)
+        public UserService(DBConnection context, IConfiguration configuration)
             {
             _context = context;
+            _configuration = configuration;
             }
 
-        public async Task<User?> AuthenticateAsync(UserDto userDto)
+        public async Task<string?> AuthenticateAsync(UserDto userDto)
             {
             if (string.IsNullOrEmpty(userDto.Email) || string.IsNullOrEmpty(userDto.Password))
                 {
@@ -35,7 +41,35 @@ namespace MagnetApi.Service
                 return null; // Invalid password
                 }
 
-            return user; // Authentication successful
+            // Generate JWT
+            var token = GenerateJwtToken(user);
+            return token; // Authentication successful, return JWT
+            }
+
+        private string GenerateJwtToken(User user)
+            {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
+            var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, user.Ranga)
+        };
+
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpirationMinutes"])),
+                signingCredentials: signingCredentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             }
 
         public async Task<bool> RegisterAsync(UserDtoRegister userDtoRegister)

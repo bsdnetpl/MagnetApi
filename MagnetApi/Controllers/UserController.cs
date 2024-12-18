@@ -1,5 +1,7 @@
 ﻿using MagnetApi.DTO;
 using MagnetApi.Service;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace MagnetApi.Controllers
     {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowSpecificOrigins")] // Nazwa polityki CORS
     public class UserController : ControllerBase
         {
         private readonly IUserService _userService;
@@ -17,6 +20,7 @@ namespace MagnetApi.Controllers
             }
 
         [HttpPost("authenticate")]
+        [AllowAnonymous] // Dostępny dla wszystkich
         public async Task<IActionResult> Authenticate([FromBody] UserDto userDto)
             {
             try
@@ -36,6 +40,7 @@ namespace MagnetApi.Controllers
             }
 
         [HttpPost("register")]
+        [Authorize(Policy = "AdminOnly")] // Wymaga roli Admin
         public async Task<IActionResult> Register([FromBody] UserDtoRegister userDtoRegister)
             {
             try
