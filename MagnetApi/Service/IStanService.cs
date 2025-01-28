@@ -7,6 +7,7 @@ namespace MagnetApi.Service
         Task AddStanAsync(Stan stan);
         Task DeleteStanAsync(int id);
         Task EditStanAsync(Stan updatedStan);
+        Task<List<Stan>> GetAllStanAsync();
         Task<List<Stan>> SearchStanAsync(string? nazwa = null, string? kodKreskowy = null, double? cena = null);
         }
     }

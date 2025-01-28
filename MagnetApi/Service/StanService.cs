@@ -65,5 +65,9 @@ namespace MagnetApi.Service
 
             return await query.ToListAsync();
             }
+        public async Task<List<Stan>> GetAllStanAsync()
+            {
+            return await _context.Stans.ToListAsync(); // Zamiast Set<Stan>().ToListAsync();
+            }
         }
     }
