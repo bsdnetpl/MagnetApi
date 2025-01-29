@@ -1,13 +1,14 @@
-﻿using MagnetApi.Models;
+﻿using MagnetApi.DB;
+using MagnetApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagnetApi.Service
     {
     public class SprzedazService : ISprzedazService
         {
-        private readonly DbContext _context;
+        private readonly DBConnection _context;
 
-        public SprzedazService(DbContext context)
+        public SprzedazService(DBConnection context)
             {
             _context = context;
             }
@@ -68,5 +69,11 @@ namespace MagnetApi.Service
             string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
             return await _context.Set<Sprzedaz>().Where(s => s.Data == currentDate).ToListAsync();
             }
+
+        public async Task<List<Sprzedaz>> GetSprzedazByDataAsync(string data)
+            {
+            return await _context.Set<Sprzedaz>().Where(s => s.Data == data).ToListAsync();
+            }
         }
+
     }

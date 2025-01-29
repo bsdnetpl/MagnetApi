@@ -7,5 +7,6 @@ namespace MagnetApi.Service
         Task AddSprzedazAsync(int stanId, double ilosc, string formaPlatnosci);
         Task DeleteSprzedazAsync(int id);
         Task<List<Sprzedaz>> GetAllSprzedazAsync();
+        Task<List<Sprzedaz>> GetSprzedazByDataAsync(string data);
         }
     }

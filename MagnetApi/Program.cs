@@ -38,7 +38,9 @@ builder.Services.AddDbContext<DBConnection>(options =>
                      new MySqlServerVersion(new Version(8, 0, 26))));
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IStanService, StanService>(); 
+builder.Services.AddScoped<IStanService, StanService>();
+builder.Services.AddScoped<ISprzedazService, SprzedazService>();
+builder.Services.AddScoped<IBazaFvService, BazaFvService>();
 
 // Odczyt ustawieñ JWT z konfiguracji
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
